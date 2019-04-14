@@ -1,8 +1,11 @@
-import { addScripts } from "./package";
+import { addScripts } from "../../utils/package";
 import * as execa from "execa";
 import * as path from "path";
-import { baseProjectUrl, unnecessaryFiles } from "../config/baseProjectConfig";
-import { spin } from "../utils/spin";
+import {
+  baseProjectUrl,
+  unnecessaryFiles
+} from "../../config/baseProjectConfig";
+import { spin } from "../../utils/spin";
 
 const cloneBaseProject = async (projectName: string) => {
   await execa("git", ["clone", baseProjectUrl, projectName]);

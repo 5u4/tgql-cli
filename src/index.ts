@@ -1,9 +1,10 @@
-import { isFolderEmpty } from "./services/checkFolderEmpty";
+import { isFolderEmpty } from "./utils/checkFolderEmpty";
 import * as program from "commander";
-import { setupBaseProject } from "./services/setupBaseProject";
-import { writeScripts } from "./services/package";
-import { setupGit } from "./services/setupGit";
+import { setupBaseProject } from "./services/baseProject/setupBaseProject";
+import { writeScripts } from "./utils/package";
+import { setupGit } from "./services/git/setupGit";
 import chalk from "chalk";
+import { promptQuestions } from "./services/prompt/promptQuestions";
 
 program.version(require("../package").version).usage("<project-name>");
 program.parse(process.argv);
@@ -23,7 +24,9 @@ if (!isFolderEmpty(projectName)) {
 }
 
 const main = async () => {
-  await setupBaseProject(projectName);
+  const { packageManager } = await promptQuestions();
+
+  await setupBaseProject(projectName, packageManager);
   await writeScripts(projectName);
   await setupGit(projectName);
 };

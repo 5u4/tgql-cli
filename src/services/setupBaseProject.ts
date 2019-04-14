@@ -1,14 +1,14 @@
 import * as execa from "execa";
-import {
-  baseProjectUrl,
-  unnecessaryFiles,
-  baseDependencies,
-  baseDevDependencies
-} from "../config/baseProjectConfig";
+import * as path from "path";
+import { baseProjectUrl, unnecessaryFiles } from "../config/baseProjectConfig";
 import { spin } from "../utils/spin";
 
 const cloneBaseProject = async (projectName: string) => {
   await execa("git", ["clone", baseProjectUrl, projectName]);
+};
+
+const getOriginalPackageJson = async (projectName: string) => {
+  return import(path.join(process.cwd(), projectName, "package.json"));
 };
 
 const removeUnnecessaryFiles = async (projectName: string) => {
@@ -26,22 +26,23 @@ const initializePackageJson = async (
 
 const installDependencies = async (
   projectName: string,
-  packageManager: "npm" | "yarn"
+  packageManager: "npm" | "yarn",
+  basePackageInfo: any
 ) => {
   const add = packageManager === "yarn" ? "add" : "install";
   const saveDev = packageManager === "yarn" ? "--dev" : "--save-dev";
 
-  await execa(
-    `cd ${projectName} && ${packageManager} ${add} ${baseDependencies.join(
-      " "
-    )}`,
-    { shell: true }
+  const dependencies = Object.keys(basePackageInfo.dependencies).join(" ");
+  const devDependencies = Object.keys(basePackageInfo.devDependencies).join(
+    " "
   );
 
+  await execa(`cd ${projectName} && ${packageManager} ${add} ${dependencies}`, {
+    shell: true
+  });
+
   await execa(
-    `cd ${projectName} && ${packageManager} ${add} ${saveDev} ${baseDevDependencies.join(
-      " "
-    )}`,
+    `cd ${projectName} && ${packageManager} ${add} ${saveDev} ${devDependencies}`,
     { shell: true }
   );
 };
@@ -50,13 +51,16 @@ export const setupBaseProject = async (
   projectName: string,
   packageManager: "yarn" | "npm" = "npm"
 ) => {
+  let basePackages: any;
+
   await spin({ text: "Pulling base project" }, async () => {
     await cloneBaseProject(projectName);
+    basePackages = await getOriginalPackageJson(projectName);
     await removeUnnecessaryFiles(projectName);
     await initializePackageJson(projectName, packageManager);
   });
 
   await spin({ text: "Installing dependencies" }, async () => {
-    await installDependencies(projectName, packageManager);
+    await installDependencies(projectName, packageManager, basePackages);
   });
 };

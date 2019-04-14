@@ -1,6 +1,7 @@
 import * as program from "commander";
 import { setupBaseProject } from "./services/setupBaseProject";
 import { writeScripts } from "./services/package";
+import { setupGit } from "./services/setupGit";
 
 program.version(require("../package").version).usage("<project-name>");
 program.parse(process.argv);
@@ -14,6 +15,7 @@ const main = async () => {
   const projectName = program.args[0];
   await setupBaseProject(projectName);
   await writeScripts(projectName);
+  await setupGit(projectName);
 };
 
 main();

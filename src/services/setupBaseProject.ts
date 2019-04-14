@@ -25,6 +25,10 @@ const initializePackageJson = async (
   });
 };
 
+const duplicateDotEnv = async (projectName: string) => {
+  await execa("cp", [".env.example", ".env"], { cwd: projectName });
+};
+
 const installDependencies = async (
   projectName: string,
   packageManager: "npm" | "yarn",
@@ -59,6 +63,7 @@ export const setupBaseProject = async (
     basePackages = await getOriginalPackageJson(projectName);
     await removeUnnecessaryFiles(projectName);
     await initializePackageJson(projectName, packageManager);
+    await duplicateDotEnv(projectName);
   });
 
   addScripts(basePackages.scripts);

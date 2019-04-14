@@ -1,0 +1,13 @@
+# System
+.DS_Store
+
+# Editor
+.vscode
+.idea
+
+# Package Manager
+node_modules
+package-lock.json
+
+# Logs
+*.log

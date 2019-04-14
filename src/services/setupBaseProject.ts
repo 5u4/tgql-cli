@@ -1,3 +1,4 @@
+import { addScripts } from "./package";
 import * as execa from "execa";
 import * as path from "path";
 import { baseProjectUrl, unnecessaryFiles } from "../config/baseProjectConfig";
@@ -59,6 +60,8 @@ export const setupBaseProject = async (
     await removeUnnecessaryFiles(projectName);
     await initializePackageJson(projectName, packageManager);
   });
+
+  addScripts(basePackages.scripts);
 
   await spin({ text: "Installing dependencies" }, async () => {
     await installDependencies(projectName, packageManager, basePackages);

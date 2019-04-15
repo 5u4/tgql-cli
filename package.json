@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node ./bin/create-tgql-app",
     "watch": "tsc -w",
-    "serve": "tsc && yarn start"
+    "serve": "tsc && yarn start",
+    "release": "node ./scripts/release.js"
   },
   "dependencies": {
     "chalk": "^2.4.2",
@@ -23,6 +24,8 @@
     "@types/inquirer": "^6.0.0",
     "@types/node": "^11.13.4",
     "@types/ora": "^3.2.0",
+    "@types/semver": "^6.0.0",
+    "semver": "^6.0.0",
     "typescript": "^3.4.3"
   },
   "repository": "https://github.com/senhungwong/tgql-cli.git",

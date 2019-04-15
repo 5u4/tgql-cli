@@ -1,8 +1,8 @@
 import { isFolderEmpty } from "./utils/checkFolderEmpty";
 import * as program from "commander";
 import { setupBaseProject } from "./services/baseProject/setupBaseProject";
-import { writeScripts } from "./utils/package";
-import { setupGit } from "./services/git/setupGit";
+import { writePackage } from "./utils/package";
+import { commitGit } from "./services/git/setupGit";
 import chalk from "chalk";
 import { promptQuestions } from "./services/prompt/promptQuestions";
 
@@ -27,8 +27,8 @@ const main = async () => {
   const { packageManager } = await promptQuestions();
 
   await setupBaseProject(projectName, packageManager);
-  await writeScripts(projectName);
-  await setupGit(projectName);
+  await writePackage(projectName);
+  await commitGit(projectName);
 };
 
 main();

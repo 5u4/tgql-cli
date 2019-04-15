@@ -6,6 +6,7 @@ import {
   unnecessaryFiles
 } from "../../config/baseProjectConfig";
 import { spin } from "../../utils/spin";
+import { initGit } from "../git/setupGit";
 
 const cloneBaseProject = async (projectName: string) => {
   await execa("git", ["clone", baseProjectUrl, projectName]);
@@ -65,6 +66,7 @@ export const setupBaseProject = async (
     await cloneBaseProject(projectName);
     basePackages = await getOriginalPackageJson(projectName);
     await removeUnnecessaryFiles(projectName);
+    await initGit(projectName);
     await initializePackageJson(projectName, packageManager);
     await duplicateDotEnv(projectName);
   });

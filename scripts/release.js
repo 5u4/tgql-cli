@@ -40,6 +40,9 @@ const publish = async () => {
   await execa("git", ["commit", "-m", `Release verison ${nextVersion}`], {
     stdout: "inherit"
   });
+  await execa("git", ["tag", "-a", `v${nextVersion}`], {
+    stdout: "inherit"
+  });
 
   // Push git
   await execa("git", ["push", "--all"], { stdout: "inherit" });

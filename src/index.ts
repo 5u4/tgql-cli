@@ -1,10 +1,5 @@
-import { isFolderEmpty } from "./utils/checkFolderEmpty";
 import * as program from "commander";
-import { setupBaseProject } from "./services/baseProject/setupBaseProject";
-import { writePackage } from "./utils/package";
-import { commitGit } from "./services/git/setupGit";
 import chalk from "chalk";
-import { promptQuestions } from "./services/prompt/promptQuestions";
 
 program.version(require("../package").version).usage("<project-name>");
 program.parse(process.argv);
@@ -14,21 +9,36 @@ if (program.args.length !== 1) {
   process.exit(1);
 }
 
-const projectName = program.args[0];
+export const projectName = program.args[0];
 
-if (!isFolderEmpty(projectName)) {
+import { Package } from "./services/Package";
+import { Option } from "./services/Option";
+import { Project } from "./services/Project";
+import { setupBaseProject } from "./bootstrap/setup";
+import { Git } from "./services/Git";
+
+if (!Project.canCreate()) {
   console.log(
     chalk.bold.red(`Folder "${projectName}" already exists and is not empty.`)
   );
   process.exit(1);
 }
 
-const main = async () => {
-  const { packageManager } = await promptQuestions();
+// const main = async () => {
+//   await Option.prompt();
 
-  await setupBaseProject(projectName, packageManager);
-  await writePackage(projectName);
-  await commitGit(projectName);
-};
+//   await Project.setup();
 
-main();
+//   // await setupBaseProject(projectName, packageManager);
+//   // await writePackage(projectName);
+//   // await commitGit(projectName);
+// };
+
+// main();
+
+(async () => {
+  await Option.prompt();
+  await setupBaseProject();
+  await Package.write();
+  await Git.addAllAndCommit();
+})();
